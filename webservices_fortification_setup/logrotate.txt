@@ -1,0 +1,6 @@
+{
+	weekly
+	missingok
+	notifempty
+	compress
+}

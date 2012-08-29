@@ -1,0 +1,7 @@
+#!/bin/bash
+
+HOSTS="10.129.36.165 10.129.36.164 10.129.36.163 10.129.36.162 10.129.36.161 10.129.36.160 10.129.36.159 10.129.36.156 10.129.36.157 10.129.36.155 10.129.36.158"
+
+for HOST in $HOSTS; do
+	ssh $HOST grep -R CONNECTOR_PORT /etc/sysconfig 2>/dev/null | grep -v tomcat6
+done
