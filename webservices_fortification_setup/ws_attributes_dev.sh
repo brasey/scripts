@@ -85,7 +85,7 @@ case $WEBSERVICE in
 		XMS="64"
 		XMX="1024"
 		;;
-	ECRWebService)
+	ECRWebservice)
 		WS_SHORTNAME="ecrws"
 		CONNECTOR_PORT="9339"
 		XMS="256"

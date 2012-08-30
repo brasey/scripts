@@ -2,8 +2,8 @@
 
 case $WEBSERVICE in
 	AdesaSmartAuction)
-		WS_SHORTNAME=""
-		CONNECTOR_PORT=""
+		WS_SHORTNAME="asaws"
+		CONNECTOR_PORT="9289"
 		XMS="256"
 		XMX="256"
 		;;
