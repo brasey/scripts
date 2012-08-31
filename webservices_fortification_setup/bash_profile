@@ -1,0 +1,31 @@
+# .bash_profile
+
+# Spacewalk server registration parameters
+
+RHNREG_KS=$(which rhnreg_ks)
+CTIVATION_KEY="22-4d0ee7b1418fd054284450667962eee1"
+SERVER_URL="http://satellite.ove.local/XMLRPC"
+BASH_PROFILE_ORG="/root/backup/.bash_profile-org"
+BASH_PROFILE_RHNREG="/root/.bash_profile"
+CAT=$(which cat)
+
+# Get the aliases and functions
+
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/bin
+
+
+if [ ! -f /etc/sysconfig/rhn/systemid ]; then
+
+        $RHNREG_KS --activationkey=$CTIVATION_KEY --serverUrl=$SERVER_URL --force
+        else
+        $CAT  ${BASH_PROFILE_ORG} >${BASH_PROFILE_RHNREG} 2>&1
+
+fi
+export PATH

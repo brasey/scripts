@@ -16,7 +16,7 @@ if [ ${HOSTNAME:0:1} = 'q' ]; then
 	ENVIRONMENT="ETEQA$INSTANCE"
 	WS_ROOT='/export/webservices'
 	FILE_SOURCE='10.129.130.50'
-	FILE_SOURCE_HOSTNAME='app-ind'
+	FILE_SOURCE_HOSTNAME='app-ind.man.qa'
 else
 	# All other environments
 	ENVIRONMENT=${HOSTNAME:0:3}
@@ -34,6 +34,7 @@ case $ENVIRONMENT in
 		WS_ROOT='/export/webservices.developer.manheim.com'
 		FILE_SOURCE='10.100.204.77'
 		FILE_SOURCE_HOSTNAME='cp-appstage01'
+		ENVIRONMENT="PREPROD"
 		;;
 esac
 
@@ -93,11 +94,9 @@ mount -v $WS_ROOT
 
 for WEBSERVICE in $WEBSERVICES; do
 	mkdir -v -p $WS_ROOT/$WEBSERVICE/$HOSTNAME/
-	rsync -ave ssh root@$FILE_SOURCE:$WS_ROOT/$WEBSERVICE/$FILE_SOURCE_HOSTNAME/ $WS_ROOT/$WEBSERVICE/$HOSTNAME/
+	rsync -ave ssh --exclude=temp/* --exclude=work/* root@$FILE_SOURCE:$WS_ROOT/$WEBSERVICE/$FILE_SOURCE_HOSTNAME/ $WS_ROOT/$WEBSERVICE/$HOSTNAME/
 
 	# Cleanup
-	rm -rf $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/temp/*
-	rm -rf $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/work/*
 	if [ ! -e $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive ]; then
 		mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive
 	fi
@@ -109,7 +108,10 @@ find $WS_ROOT -type d -print0 | xargs -0 chmod -v 0775
 find $WS_ROOT -type f -print0 | xargs -0 chmod -v 0664
 find $WS_ROOT -type f -name "*\.sh" -print0 | xargs -0 chmod -v 0775
 
-find $WS_ROOT -name catalina.out >> /etc/logrotate.d/webservices
+for WEBSERVICE in $WEBSERVICES; do
+	echo $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/catalina.out >> /etc/logrotate.d/webservices
+done
+
 cat logrotate.txt >> /etc/logrotate.d/webservices
 
 for WEBSERVICE in $WEBSERVICES; do
@@ -140,6 +142,9 @@ for WEBSERVICE in $WEBSERVICES; do
 	cat /etc/sysconfig/$WEBSERVICE ws_config.template > /etc/sysconfig/$WEBSERVICE.new
 	mv /etc/sysconfig/$WEBSERVICE.new /etc/sysconfig/$WEBSERVICE
 
+	chgrp webservices /etc/sysconfig/$WEBSERVICE
+	chmod g+w /etc/sysconfig/$WEBSERVICE
+
 	chkconfig $WEBSERVICE on
 done
 
@@ -158,6 +163,7 @@ echo "Cmnd_Alias WEBSERVICES = $WEBSERVICE_LIST" >> /etc/sudoers
 echo "%webservices	ALL=NOPASSWD: WEBSERVICES" >> /etc/sudoers
 
 groupadd webservices
+usermod -g webservices webservices
 usermod -a -G webservices kgatdula
 usermod -a -G webservices jwynne
 usermod -a -G webservices jreddick
