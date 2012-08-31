@@ -124,7 +124,7 @@ for WEBSERVICE in $WEBSERVICES; do
 		ETEQA*)
 			source ws_attributes_qa.sh
 			;;
-		PRE)
+		PREPROD)
 			source ws_attributes_pre.sh
 			;;
 	esac
@@ -136,8 +136,8 @@ for WEBSERVICE in $WEBSERVICES; do
 	echo "CONNECTOR_PORT=\"$CONNECTOR_PORT\"" >> /etc/sysconfig/$WEBSERVICE
 	echo "ENVIRONMENT=\"$ENVIRONMENT\"" >> /etc/sysconfig/$WEBSERVICE
 	echo "TOMCAT_USER=\"webservices\"" >> /etc/sysconfig/$WEBSERVICE
-	echo "XMS=\"$XMS\"" >> /etc/sysconfig/$WEBSERVICE
-	echo "XMX=\"$XMX\"" >> /etc/sysconfig/$WEBSERVICE
+	echo "XMS=\"-Xms$XMSm\"" >> /etc/sysconfig/$WEBSERVICE
+	echo "XMX=\"-Xmx$XMXm\"" >> /etc/sysconfig/$WEBSERVICE
 
 	cat /etc/sysconfig/$WEBSERVICE ws_config.template > /etc/sysconfig/$WEBSERVICE.new
 	mv /etc/sysconfig/$WEBSERVICE.new /etc/sysconfig/$WEBSERVICE
