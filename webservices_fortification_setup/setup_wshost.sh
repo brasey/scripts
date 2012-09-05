@@ -40,10 +40,10 @@ esac
 
 case $CLUSTER in
 	01)
-		WEBSERVICES="AdesaSmartAuction AuctionInfoWebService AuthenticationWebService BlobServerWebService CreditWebService DentWizardMobileSynchronizationWebServices ECRWebservice PurchasedVehiclesWebService SpecialPricingWebService UserWebService VehicleDecoderWebService"
+		WEBSERVICES="AdesaSmartAuction AuctionInfoWebService AuthenticationWebService BlobServerWebService CreditWebService DentWizardMobileSynchronizationWebServices ECRWebService PurchasedVehiclesWebService SpecialPricingWebService UserWebService VehicleDecoderWebService"
 		;;
 	02)
-		WEBSERVICES="ChargesWebService ECRDataWebServices ECRDisplayWebService ECRPriceWebServices ECRVehWebServices FeesWebService InSightComplianceService InspectionSolutions MAFSWebservices SalvageInfoWebService TRACrawler UserChangeCrawlerWeb VINDecoderBulkUpdateWebService VinStyleIDtoMIDWebService"
+		WEBSERVICES="ChargesWebService ECRDataWebServices ECRDisplayWebService ECRPriceWebServices ECRVehWebServices FeesWebService InSightComplianceService InspectionSolutionsWebService MAFSWebservices SalvageInfoWebService TRACrawler UserChangeCrawlerWeb VINDecoderBulkUpdateWebService VinStyleIDtoMIDWebservice"
 		;;
 	03)
 		WEBSERVICES="AttachmentWebService"
@@ -136,8 +136,8 @@ for WEBSERVICE in $WEBSERVICES; do
 	echo "CONNECTOR_PORT=\"$CONNECTOR_PORT\"" >> /etc/sysconfig/$WEBSERVICE
 	echo "ENVIRONMENT=\"$ENVIRONMENT\"" >> /etc/sysconfig/$WEBSERVICE
 	echo "TOMCAT_USER=\"webservices\"" >> /etc/sysconfig/$WEBSERVICE
-	echo "XMS=\"-Xms$XMSm\"" >> /etc/sysconfig/$WEBSERVICE
-	echo "XMX=\"-Xmx$XMXm\"" >> /etc/sysconfig/$WEBSERVICE
+	echo "XMS=\"-Xms${XMS}m\"" >> /etc/sysconfig/$WEBSERVICE
+	echo "XMX=\"-Xmx${XMX}m\"" >> /etc/sysconfig/$WEBSERVICE
 
 	cat /etc/sysconfig/$WEBSERVICE ws_config.template > /etc/sysconfig/$WEBSERVICE.new
 	mv /etc/sysconfig/$WEBSERVICE.new /etc/sysconfig/$WEBSERVICE
