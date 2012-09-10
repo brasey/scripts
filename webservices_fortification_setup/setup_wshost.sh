@@ -103,6 +103,7 @@ for WEBSERVICE in $WEBSERVICES; do
 	mv $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/* $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive
 done
 
+groupadd webservices
 chown -v -R webservices:webservices $WS_ROOT
 find $WS_ROOT -type d -print0 | xargs -0 chmod -v 0775
 find $WS_ROOT -type f -print0 | xargs -0 chmod -v 0664
@@ -145,16 +146,14 @@ for WEBSERVICE in $WEBSERVICES; do
 	chgrp webservices /etc/sysconfig/$WEBSERVICE
 	chmod g+w /etc/sysconfig/$WEBSERVICE
 
+	/etc/init.d/$WEBSERVICE start
 	chkconfig $WEBSERVICE on
-done
 
-for WEBSERVICE in $WEBSERVICES; do
 	if [ -z "$WEBSERVICE_LIST" ]; then
 		WEBSERVICE_LIST+="/etc/init.d/$WEBSERVICE"
 	else
 		WEBSERVICE_LIST+=", /etc/init.d/$WEBSERVICE"
 	fi
-	
 done
 
 echo >> /etc/sudoers
@@ -162,7 +161,6 @@ echo "# Manheim sudo config" >> /etc/sudoers
 echo "Cmnd_Alias WEBSERVICES = $WEBSERVICE_LIST" >> /etc/sudoers
 echo "%webservices	ALL=NOPASSWD: WEBSERVICES" >> /etc/sudoers
 
-groupadd webservices
 usermod -g webservices webservices
 usermod -a -G webservices kgatdula
 usermod -a -G webservices jwynne
