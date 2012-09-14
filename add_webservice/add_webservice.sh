@@ -34,7 +34,6 @@ case $ENVIRONMENT in
 esac
 
 mkdir -v -p $WS_ROOT/$WEBSERVICE/$HOSTNAME/1
-chown -v -R webservices:webservices $WS_ROOT/$WEBSERVICE
 
 echo $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/catalina.out >> /etc/logrotate.d/webservices.tmp
 cat /etc/logrotate.d/webservices >> /etc/logrotate.d/webservices.tmp
@@ -60,4 +59,19 @@ chmod g+w /etc/sysconfig/$WEBSERVICE
 
 chkconfig $WEBSERVICE on
 
-sed -i 's/\(Cmnd_Alias WEBSERVICES.*\)/\1, $WEBSERVICE/' /etc/sudoers
+sed -i "s#^\(Cmnd_Alias WEBSERVICES.*\)#\1, /etc/init.d/$WEBSERVICE#" /etc/sudoers
+
+cp -a /usr/share/tomcat6/conf $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/conf
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/webapps
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/temp
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/work
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/shared
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/server
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/common
+chown -v -R webservices:webservices $WS_ROOT/$WEBSERVICE
+
+echo
+echo "Don't forget to edit $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/conf/server.xml and set a unique Connector port!"
+echo
