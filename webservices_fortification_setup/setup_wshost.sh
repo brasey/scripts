@@ -94,13 +94,34 @@ mount -v $WS_ROOT
 
 for WEBSERVICE in $WEBSERVICES; do
 	mkdir -v -p $WS_ROOT/$WEBSERVICE/$HOSTNAME/
-	rsync -ave ssh --exclude=temp/* --exclude=work/* root@$FILE_SOURCE:$WS_ROOT/$WEBSERVICE/$FILE_SOURCE_HOSTNAME/ $WS_ROOT/$WEBSERVICE/$HOSTNAME/
 
-	# Cleanup
-	if [ ! -e $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive ]; then
-		mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive
+	PROD_INSIDE_WS_ROOT='/export/webservices.manheim.com'
+	PROD_INSIDE_FILE_SOURCE='10.145.11.33'
+	PROD_INSIDE_FILES_SOURCE_HOSTNAME='tx-websvc01'
+	PROD_DMZ_FILES_SOURCE_HOSTNAME='tx-websvc04'
+
+	if ssh $FILE_SOURCE ls -d $WS_ROOT/$WEBSERVICE > /dev/null; then
+		rsync -ave ssh --exclude=temp/* --exclude=work/* \
+			root@$FILE_SOURCE:$WS_ROOT/$WEBSERVICE/$FILE_SOURCE_HOSTNAME/ \
+			$WS_ROOT/$WEBSERVICE/$HOSTNAME/
+
+		# Cleanup
+		if [ ! -e $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive ]; then
+			mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive
+		fi
+		mv $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/* $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive
+
+	elif ssh $PROD_INSIDE_FILE_SOURCE ls -d $PROD_INSIDE_WS_ROOT/$WEBSERVICE_PROD_INSIDE_FILES_SOURCE_HOSTNAME > /dev/null; then 
+		rsync -ave ssh --exclude=logs/* --exclude=temp/* --exclude=work/* \
+			root@$PROD_INSIDE_FILE_SOURCE:$PROD_INSIDE_WS_ROOT/$WEBSERVICE/$PROD_INSIDE_FILE_SOURCE_HOSTNAME/ \
+			$WS_ROOT/$WEBSERVICE/$HOSTNAME/
+
+	elif ssh $PROD_INSIDE_FILE_SOURCE ls -d $PROD_INSIDE_WS_ROOT/$WEBSERVICE/$PROD_DMZ_FILES_SOURCE_HOSTNAME > /dev/null; then 
+		rsync -ave ssh --exclude=logs/* --exclude=temp/* --exclude=work/* \
+			root@$PROD_INSIDE_FILE_SOURCE:$PROD_INSIDE_WS_ROOT/$WEBSERVICE/$PROD_DMZ_FILE_SOURCE_HOSTNAME/ \
+			$WS_ROOT/$WEBSERVICE/$HOSTNAME/
 	fi
-	mv $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/* $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/logs/archive
+
 done
 
 groupadd webservices
@@ -123,7 +144,9 @@ for WEBSERVICE in $WEBSERVICES; do
 			source ws_attributes_dev.sh
 			;;
 		ETEQA*)
-			source ws_attributes_qa.sh
+			# There are many missing web services in QA, so pull info from dev file
+			#source ws_attributes_qa.sh
+			source ws_attributes_dev.sh
 			;;
 		PREPROD)
 			source ws_attributes_pre.sh
