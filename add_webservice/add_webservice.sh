@@ -70,7 +70,9 @@ mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/work
 mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/shared
 mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/server
 mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/common
+mkdir $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/common/lib
 chown -v -R webservices:webservices $WS_ROOT/$WEBSERVICE
+chmod g+w  $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/*
 
 echo
 echo "Don't forget to edit $WS_ROOT/$WEBSERVICE/$HOSTNAME/1/conf/server.xml and set a unique Connector port!"
