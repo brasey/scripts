@@ -1,0 +1,26 @@
+
+HOSTNAME=`hostname`
+
+CATALINA_BASE="$WS_BASE/$WS_NAME/$HOSTNAME/1"
+CATALINA_HOME="$WS_BASE/$WS_NAME/$HOSTNAME/1"
+CATALINA_PID="/var/run/$WS_NAME.pid"
+TOMCAT_LOG="$WS_BASE/$WS_NAME/`hostname`/1/logs/catalina.out"
+
+CLASSPATH="$WS_BASE/$WS_NAME/$HOSTNAME/1/bin/bootstrap.jar:$WS_BASE/$WS_NAME/$HOSTNAME/1/bin/commons-logging-api.jar:$WS_BASE/$WS_NAME/$HOSTNAME/1/common/lib/servlet-api.jar:$WS_BASE/$WS_NAME/$HOSTNAME/1/common/lib/jsp-api.jar"
+
+# Actional classpath
+#CLASSPATH="$CLASSPATH:$WS_BASE/actional/ghostagent/interceptors/bea/actional-axis-interceptor.jar:$WS_BASE/actional/ghostagent/interceptors/bea/actional-jdbc-interceptor.jar:$WS_BASE/actional/ghostagent/interceptors/bea/actional-jms-interceptor.jar:$WS_BASE/actional/ghostagent/interceptors/bea/actional-http-interceptor.jar:$WS_BASE/actional/ghostagent/interceptors/bea/actional-servlet-interceptor.jar:$WS_BASE/actional/ghostagent/interceptors/bea/actional-sdk.jar:$WS_BASE/actional/ghostagent/interceptors/bea/actional-j2ee-interceptor.jar:$WS_BASE/actional/ghostagent/interceptors/bea/actional-sdk-helpers.jar::$WS_BASE/$WS_NAME/$HOSTNAME/1/bin/bootstrap.jar:$WS_BASE/$WS_NAME/$HOSTNAME/1/bin/commons-logging-api.jar:$WS_BASE/$WS_NAME/$HOSTNAME/1/common/lib/servlet-api.jar:$WS_BASE/$WS_NAME/$HOSTNAME/1/common/lib/jsp-api.jar"
+
+JAVA_OPTS="$XMS"
+JAVA_OPTS="$JAVA_OPTS $XMX"
+JAVA_OPTS="$JAVA_OPTS -Dsystem.environment=$ENVIRONMENT"
+JAVA_OPTS="$JAVA_OPTS -Dwhoami=$WS_NAME"
+JAVA_OPTS="$JAVA_OPTS -DUNIQUE-ID=$WS_SHORTNAME-$ENVIRONMENT-$HOSTNAME-1"
+JAVA_OPTS="$JAVA_OPTS -Duser.timezone=US/Eastern"
+JAVA_OPTS="$JAVA_OPTS -Dlog.output.dir=$WS_BASE/$WS_NAME/$HOSTNAME/1/logs"
+JAVA_OPTS="$JAVA_OPTS -Djava.endorsed.dirs=$WS_BASE/$WS_NAME/$HOSTNAME/1/common/endorsed"
+JAVA_OPTS="$JAVA_OPTS -Xloggc:$WS_BASE/$WS_NAME/$HOSTNAME/1/logs/gc.log"
+
+# Actional options
+#JAVA_OPTS="$JAVA_OPTS -Xbootclasspath/p:$WS_BASE/$WS_NAME/$HOSTNAME/1/actional:$WS_BASE/actional/ghostagent/interceptors/bea/actional-plugmaker.jar"
+#JAVA_OPTS="$JAVA_OPTS -Dcom.actional.lg.interceptor.config=$WS_BASE/actional/ghostagent/config"
